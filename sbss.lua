@@ -26,6 +26,8 @@ function init(self, fileName)
 	parse(self, fileName)
 end
 
+local file_exists = love.filesystem.getInfo and function (path) return love.filesystem.getInfo(path) ~= nil end or love.filesystem.exists
+
 function parse(self, fileName)
 	local contents = love.filesystem.read(fileName)
 	local filePath = string.match(fileName, "^.*%/") or ""
@@ -34,7 +36,7 @@ function parse(self, fileName)
 		if s:find("<TextureAtlas") ~= nil then
 			local fileName = getAttributeData(s, "imagePath")
 
-			if love.filesystem.exists(filePath .. fileName) then
+			if file_exists(filePath .. fileName) then
 				self.spriteSheet = love.graphics.newImage(filePath .. fileName)
 			else
 				error("Error: " .. filePath .. fileName .. " does not exist.")
